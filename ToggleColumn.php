@@ -29,6 +29,12 @@ class ToggleColumn extends DataColumn
      */
     public $primaryKey = 'primaryKey';
 
+    /** 
+     * Build a custom URL (primaryKey and action values will be ignored if this is specified.)
+     * @var closure 
+     */
+    public $url;
+
     /**
      * Whether to use ajax or not
      * @var bool
@@ -42,12 +48,21 @@ class ToggleColumn extends DataColumn
         }
     }
 
+    protected function buildUrl($model, $key, $index)
+    {
+        if(isset($this->url) && is_callable($this->url)) {
+            return call_user_func($this->url, $model, $key, $index);
+        } else {
+            return [$this->action, 'id' => $model->{$this->primaryKey}];
+        }
+    }
+
     /**
      * @inheritdoc
      */
     protected function renderDataCellContent($model, $key, $index)
     {
-        $url = [$this->action, 'id' => $model->{$this->primaryKey}];
+        $url = $this->buildUrl($model, $key, $index);
 
         $attribute = $this->attribute;
         $value = $model->$attribute;

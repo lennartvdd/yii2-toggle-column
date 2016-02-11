@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "pheme\\grid\\": ""
+            "\\pheme\\grid\\": ""
         }
     }
 }
